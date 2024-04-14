@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List
 import numpy as np
+import math
 
 
 class CriteraFeedback(BaseModel):
@@ -11,7 +12,7 @@ class CriteraFeedback(BaseModel):
         ..., description="Concise list of weaknesses for this criteria"
     )
     suggestions: List[str] = Field(
-        ..., description="Concise list of suggestions for improvement this criteria"
+        ..., description="Concise list of suggestions provided that are not weaknesses"
     )
 
 
@@ -114,7 +115,9 @@ def remove_duplicates(openai_client, strings: List[str]) -> List[str]:
     # Compute pairwise cosine similarity and filter duplicates
     for i in range(n):
         for j in range(i + 1, n):
-            if keep[j] and cosine_similarity(embeddings[i], embeddings[j]) > threshold:
+            if keep[j] and cosine_similarity(
+                embeddings[i], embeddings[j]
+            ) >= math.floor(threshold):
                 keep[j] = False
 
     # Filter out duplicates
