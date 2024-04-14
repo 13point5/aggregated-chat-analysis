@@ -115,9 +115,9 @@ def remove_duplicates(openai_client, strings: List[str]) -> List[str]:
     # Compute pairwise cosine similarity and filter duplicates
     for i in range(n):
         for j in range(i + 1, n):
-            if keep[j] and cosine_similarity(
-                embeddings[i], embeddings[j]
-            ) >= math.floor(threshold):
+            if keep[j] and cosine_similarity(embeddings[i], embeddings[j]) > math.floor(
+                threshold
+            ):
                 keep[j] = False
 
     # Filter out duplicates
