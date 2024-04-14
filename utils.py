@@ -110,14 +110,19 @@ def remove_duplicates(openai_client, strings: List[str]) -> List[str]:
 
     embeddings = get_embeddings(openai_client, strings)
     similarity_matrix = cosine_similarity_matrix(embeddings)
+    print("Similarity Matrix: ", similarity_matrix)
     threshold = dynamic_threshold(similarity_matrix)
+    threshold = round(threshold, 2)
+    print("Threshold: ", threshold)
 
     # Compute pairwise cosine similarity and filter duplicates
     for i in range(n):
         for j in range(i + 1, n):
-            if keep[j] and cosine_similarity(embeddings[i], embeddings[j]) > math.floor(
-                threshold
-            ):
+            similarity = round(cosine_similarity(embeddings[i], embeddings[j]), 2)
+            print("Strings: ", strings[i], strings[j])
+            print("Similarity: ", similarity)
+            print()
+            if keep[j] and (similarity > threshold or similarity >= 0.8):
                 keep[j] = False
 
     # Filter out duplicates
